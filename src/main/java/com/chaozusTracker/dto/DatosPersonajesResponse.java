@@ -1,5 +1,7 @@
 package com.chaozusTracker.dto;
 
+import com.chaozusTracker.models.characterRelated.DatosPersonajes;
+
 import java.util.List;
 
 public class DatosPersonajesResponse {
@@ -7,15 +9,17 @@ public class DatosPersonajesResponse {
     private long id;
     private String nombre;
     private String imagen;
-    private List<String> transformaciones;
+    private List<TransformacionResponse> transformaciones;
     private List<String> habilidades;
 
 
-    public DatosPersonajesResponse(long id, String nombre, String imagen, String transformaciones, String habilidades) {
+    public DatosPersonajesResponse(long id, String nombre, String imagen, List<DatosPersonajes> transformaciones, String habilidades) {
         this.id = id;
         this.nombre = nombre;
         this.imagen = imagen;
-        this.transformaciones = this.convertTransformaciones(transformaciones);
+        this.transformaciones = transformaciones.stream()
+                .map(t -> new TransformacionResponse(t.getId(), t.getNombre(), t.getImagen()))
+                .toList();
         this.habilidades = this.convertHabilidades(habilidades);
     }
 
@@ -54,11 +58,11 @@ public class DatosPersonajesResponse {
         this.imagen = imagen;
     }
 
-    public List<String> getTransformaciones() {
+    public List<TransformacionResponse> getTransformaciones() {
         return transformaciones;
     }
 
-    public void setTransformaciones(List<String> transformaciones) {
+    public void setTransformaciones(List<TransformacionResponse> transformaciones) {
         this.transformaciones = transformaciones;
     }
 

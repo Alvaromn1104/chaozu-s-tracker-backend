@@ -18,7 +18,7 @@ public class DatosPersonajesService {
     private DatosPersonajesRepository datosPersonajesRepository;
 
     public DatosPersonajesResponse getPersonajeById(Long id) {
-        Optional<DatosPersonajes> personaje = datosPersonajesRepository.findById(id);
+        Optional<DatosPersonajes> personaje = datosPersonajesRepository.findWithTransformacionesById(id);
 
         if (personaje.isPresent()) {
             DatosPersonajes datos = personaje.get();

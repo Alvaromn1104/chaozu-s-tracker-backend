@@ -1,10 +1,7 @@
 package com.chaozusTracker.models.characterRelated;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
-import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -22,8 +19,14 @@ public class DatosPersonajes {
     private String imagen;
 
 
-    @Column(length = 3000)
-    private String transformaciones;
+    @OneToMany
+    @JoinTable(
+            name = "personaje_transformaciones",
+            joinColumns = @JoinColumn(name = "personaje_id"),
+            inverseJoinColumns = @JoinColumn(name = "transformacion_id")
+    )
+    private List<DatosPersonajes> transformaciones;
+
 
 
     @Column(nullable = false, length = 3000)
@@ -66,12 +69,12 @@ public class DatosPersonajes {
         this.habilidades = habilidades != null ? String.join(",", habilidades) : "";
     }
 
-    public String getTransformaciones() {
+    public List<DatosPersonajes> getTransformaciones() {
         return transformaciones;
     }
 
-    public void setTransformaciones(List<String> transformaciones) {
-        this.transformaciones = transformaciones != null ? String.join(",", transformaciones) : "";
+    public void setTransformaciones(List<DatosPersonajes> transformaciones) {
+        this.transformaciones = transformaciones;
     }
 
     public Personajes getPersonajes() {
