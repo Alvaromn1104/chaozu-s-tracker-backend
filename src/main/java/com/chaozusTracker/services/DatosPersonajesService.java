@@ -5,11 +5,10 @@ import com.chaozusTracker.models.characterRelated.DatosPersonajes;
 import com.chaozusTracker.repository.characterRelated.DatosPersonajesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class DatosPersonajesService {
@@ -18,20 +17,29 @@ public class DatosPersonajesService {
     private DatosPersonajesRepository datosPersonajesRepository;
 
     public DatosPersonajesResponse getPersonajeById(Long id) {
-        Optional<DatosPersonajes> personaje = datosPersonajesRepository.findWithTransformacionesById(id);
+        Optional<DatosPersonajes> personajeOpt = datosPersonajesRepository.findWithTransformacionesById(id);
 
-        if (personaje.isPresent()) {
-            DatosPersonajes datos = personaje.get();
-            DatosPersonajesResponse datosPersonajes = new DatosPersonajesResponse(
+        if (personajeOpt.isPresent()) {
+            DatosPersonajes datos = personajeOpt.get();
+
+            // Combinar transformaciones directas e inversas sin duplicados
+            Set<DatosPersonajes> combinadas = datos.getTransformaciones();
+            if (datos.getTransformadoEn() != null) {
+                for (DatosPersonajes t : datos.getTransformadoEn()) {
+                    if (!combinadas.contains(t)) {
+                        combinadas.add(t);
+                    }
+                }
+            }
+
+            return new DatosPersonajesResponse(
                     datos.getId(),
                     datos.getNombre(),
                     datos.getImagen(),
-                    datos.getTransformaciones(),
+                    new ArrayList<>(combinadas),
                     datos.getHabilidades()
             );
-            return datosPersonajes;
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Datos no encontrados");
         }
     }

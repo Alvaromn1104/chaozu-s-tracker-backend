@@ -20,19 +20,40 @@ public class UserProfileController {
     private UserProfileService userProfileService;
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserProfile> getUserProfile(@PathVariable Long userId) {
-        UserProfile userProfile = userService.getUserProfileByUserId(userId);
-        return ResponseEntity.ok(userProfile);
+    public ResponseEntity<UserProfileDTO> getUserProfile(@PathVariable Long userId) {
+        UserProfileDTO userProfileDTO = userProfileService.getUserProfileDTO(userId);
+        return ResponseEntity.ok(userProfileDTO);
     }
 
     @PatchMapping("/{userId}")
     public ResponseEntity<?> updateUserProfile(@PathVariable Long userId, @RequestBody UserProfileDTO userProfileDTO){
         try{
-            UserProfile updatedProfile = userProfileService.updateUserProfile(userId, userProfileDTO);
-            return ResponseEntity.ok(updatedProfile);
+            userProfileService.updateUserProfile(userId, userProfileDTO);
+            UserProfileDTO updatedDTO = userProfileService.getUserProfileDTO(userId);
+            return ResponseEntity.ok(updatedDTO);
         }
         catch (Exception e){
             return ResponseEntity.status(500).body("Error al actualizar el perfil de usuario");
+        }
+    }
+
+    @PatchMapping("/{userId}/favoritos/add/{personajeId}")
+    public ResponseEntity<?> addFavorito(@PathVariable Long userId, @PathVariable Long personajeId) {
+        try {
+            userProfileService.addFavorito(userId, personajeId);
+            return ResponseEntity.ok("Favorito añadido con éxito");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al añadir favorito");
+        }
+    }
+
+    @PatchMapping("/{userId}/favoritos/remove/{personajeId}")
+    public ResponseEntity<?> removeFavorito(@PathVariable Long userId, @PathVariable Long personajeId) {
+        try {
+            userProfileService.removeFavorito(userId, personajeId);
+            return ResponseEntity.ok("Favorito eliminado con éxito");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al eliminar favorito");
         }
     }
 

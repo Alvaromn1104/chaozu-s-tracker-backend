@@ -1,5 +1,6 @@
 package com.chaozusTracker.models.userRelated.UserProfileRelated;
 
+import com.chaozusTracker.models.characterRelated.DatosPersonajes;
 import com.chaozusTracker.models.userRelated.Users;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -24,7 +25,13 @@ public class UserProfile {
     @OneToOne(mappedBy = "userProfile", cascade = CascadeType.ALL)
     private Users user;
 
-    private List<Long> favoritos;
+    @ManyToMany
+    @JoinTable(
+            name = "user_favorites",
+            joinColumns = @JoinColumn(name = "user_profile_id"),
+            inverseJoinColumns = @JoinColumn(name = "personaje_id")
+    )
+    private List<DatosPersonajes> favoritos;
 
     public Long getId() {
         return id;
@@ -58,11 +65,11 @@ public class UserProfile {
         this.user = user;
     }
 
-    public List<Long> getFavoritos() {
+    public List<DatosPersonajes> getFavoritos() {
         return favoritos;
     }
 
-    public void setFavoritos(List<Long> favoritos) {
+    public void setFavoritos(List<DatosPersonajes> favoritos) {
         this.favoritos = favoritos;
     }
 }

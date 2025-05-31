@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface DatosPersonajesRepository extends JpaRepository<DatosPersonajes, Long> {
-    @EntityGraph(attributePaths = {"transformaciones"})
+    @EntityGraph(attributePaths = {"transformaciones", "transformadoEn"})
     Optional<DatosPersonajes> findWithTransformacionesById(Long id);
 }
