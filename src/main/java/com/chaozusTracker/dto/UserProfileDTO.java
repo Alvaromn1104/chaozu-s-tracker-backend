@@ -7,6 +7,7 @@ public class UserProfileDTO {
     private String userName;
     private String description;
     private List<Long> favoritosIds;
+    private List<Long> trofeosConseguidosIds;
 
     public String getUserName() {
         return userName;
@@ -30,5 +31,12 @@ public class UserProfileDTO {
 
     public void setFavoritosIds(List<Long> favoritosIds) {
         this.favoritosIds = favoritosIds;
+    }
+    public List<Long> getTrofeosConseguidosIds() {
+        return trofeosConseguidosIds;
+    }
+
+    public void setTrofeosConseguidosIds(List<Long> trofeosConseguidosIds) {
+        this.trofeosConseguidosIds = trofeosConseguidosIds;
     }
 }

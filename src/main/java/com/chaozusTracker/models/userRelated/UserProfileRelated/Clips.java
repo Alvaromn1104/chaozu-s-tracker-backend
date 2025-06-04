@@ -20,6 +20,13 @@ public class Clips {
     @Column(nullable = false, unique = true)
     private String url;
 
+    @ManyToOne
+    @JoinColumn(name = "user_profile_id", nullable = false)
+    private UserProfile userProfile;
+
+    @Column(nullable = false, unique = true)
+    private String publicId;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -64,5 +71,21 @@ public class Clips {
 
     public void setUpdateAt(LocalDateTime updateAt) {
         this.updateAt = updateAt;
+    }
+
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
+
+    public String getPublicId() {
+        return publicId;
+    }
+
+    public void setPublicId(String publicId) {
+        this.publicId = publicId;
     }
 }

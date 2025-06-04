@@ -2,11 +2,10 @@ package com.chaozusTracker.models;
 
 import com.chaozusTracker.models.GameInformationRelated.Controles;
 import com.chaozusTracker.models.GameInformationRelated.Historia;
-import com.chaozusTracker.models.GameInformationRelated.Platino;
+import com.chaozusTracker.models.platinoRelated.Platino;
 import com.chaozusTracker.models.UpdatesRelated.DLC;
 import com.chaozusTracker.models.UpdatesRelated.Noticias;
 import com.chaozusTracker.models.characterRelated.Personajes;
-import com.chaozusTracker.models.userRelated.UserProfileRelated.UserProfile;
 import jakarta.persistence.*;
 
 import java.util.HashSet;

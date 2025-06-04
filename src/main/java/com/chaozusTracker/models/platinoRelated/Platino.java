@@ -1,4 +1,4 @@
-package com.chaozusTracker.models.GameInformationRelated;
+package com.chaozusTracker.models.platinoRelated;
 
 import com.chaozusTracker.models.Categorias;
 import jakarta.persistence.*;
@@ -14,6 +14,8 @@ public class Platino {
     private String nombre;
 
     private String imagen;
+
+    private String tipo;
 
     @Column(length = 1000)
     private String descripcion;
@@ -61,4 +63,8 @@ public class Platino {
     public void setCategoria(Categorias categoria) {
         this.categoria = categoria;
     }
+
+    public String getTipo() { return tipo; }
+
+    public void setTipo(String tipo) { this.tipo = tipo; }
 }
