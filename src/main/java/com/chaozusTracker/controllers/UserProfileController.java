@@ -1,5 +1,6 @@
 package com.chaozusTracker.controllers;
 
+import com.chaozusTracker.dto.PlatinoDTO;
 import com.chaozusTracker.dto.UserProfileDTO;
 import com.chaozusTracker.services.UserProfileService;
 import com.chaozusTracker.services.UserService;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users_profiles")
@@ -122,6 +125,16 @@ public class UserProfileController {
             return ResponseEntity.ok("Trofeo eliminado de conseguidos");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al eliminar el trofeo de conseguidos");
+        }
+    }
+
+    @GetMapping("/{id}/trophies")
+    public ResponseEntity<List<PlatinoDTO>> getTrophies(@PathVariable Long id) {
+        try {
+            List<PlatinoDTO> trophies = userProfileService.getTrofeosByUserProfileId(id);
+            return ResponseEntity.ok(trophies);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 

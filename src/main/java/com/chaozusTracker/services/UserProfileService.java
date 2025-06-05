@@ -1,5 +1,6 @@
 package com.chaozusTracker.services;
 
+import com.chaozusTracker.dto.PlatinoDTO;
 import com.chaozusTracker.dto.UserProfileDTO;
 import com.chaozusTracker.models.characterRelated.DatosPersonajes;
 import com.chaozusTracker.models.platinoRelated.Platino;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserProfileService {
@@ -179,6 +181,21 @@ public class UserProfileService {
         profile.getTrofeosConseguidos().removeIf(t -> t.getId().equals(trofeoId));
 
         userProfileRepository.save(profile);
+    }
+
+    public List<PlatinoDTO> getTrofeosByUserProfileId(Long userId) {
+        UserProfile profile = userProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Perfil de usuario no encontrado"));
+
+        return profile.getTrofeosConseguidos().stream()
+                .map(t -> new PlatinoDTO(
+                        t.getId(),
+                        t.getNombre(),
+                        t.getImagen(),
+                        t.getTipo(),
+                        t.getDescripcion()
+                ))
+                .collect(Collectors.toList());
     }
 
 }
