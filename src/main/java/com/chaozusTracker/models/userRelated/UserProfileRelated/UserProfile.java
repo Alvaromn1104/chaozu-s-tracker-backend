@@ -51,6 +51,10 @@ public class UserProfile {
     @OneToMany(mappedBy = "userProfile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Clips> clips;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Rango rango;
+
 
     public Long getId() {
         return id;
@@ -121,5 +125,13 @@ public class UserProfile {
 
     public void setClips(List<Clips> clips) {
         this.clips = clips;
+    }
+
+    public Rango getRango() {
+        return rango;
+    }
+
+    public void setRango(Rango rango) {
+        this.rango = rango;
     }
 }

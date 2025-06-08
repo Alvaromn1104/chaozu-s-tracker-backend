@@ -29,13 +29,14 @@ public class UserProfileController {
     }
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<?> updateUserProfile(@PathVariable Long userId, @RequestBody UserProfileDTO userProfileDTO){
-        try{
+    public ResponseEntity<?> updateUserProfile(
+            @PathVariable Long userId,
+            @RequestBody UserProfileDTO userProfileDTO) {
+        try {
             userProfileService.updateUserProfile(userId, userProfileDTO);
             UserProfileDTO updatedDTO = userProfileService.getUserProfileDTO(userId);
             return ResponseEntity.ok(updatedDTO);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al actualizar el perfil de usuario");
         }
     }
@@ -136,6 +137,22 @@ public class UserProfileController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<UserProfileDTO>> getAllUserProfiles() {
+        List<UserProfileDTO> users = userProfileService.getAllUserProfiles();
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/profiles/by-id/{profileId}")
+    public ResponseEntity<UserProfileDTO> getByProfileId(@PathVariable Long profileId) {
+        return ResponseEntity.ok(userProfileService.getUserProfileByProfileId(profileId));
+    }
+
+    @GetMapping("/perfil/{profileId}/trofeos")
+    public ResponseEntity<List<PlatinoDTO>> getTrofeosByProfileId(@PathVariable Long profileId) {
+        return ResponseEntity.ok(userProfileService.getTrofeosByProfileId(profileId));
     }
 
 }

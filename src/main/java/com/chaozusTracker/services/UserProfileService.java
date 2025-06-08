@@ -1,5 +1,6 @@
 package com.chaozusTracker.services;
 
+import com.chaozusTracker.dto.ClipDTO;
 import com.chaozusTracker.dto.PlatinoDTO;
 import com.chaozusTracker.dto.UserProfileDTO;
 import com.chaozusTracker.models.characterRelated.DatosPersonajes;
@@ -40,24 +41,29 @@ public class UserProfileService {
     public UserProfile updateUserProfile(Long userId, UserProfileDTO userProfileDTO) {
         Optional<UserProfile> optionalUserProfile = userProfileRepository.findByUserId(userId);
 
-        if(optionalUserProfile.isPresent()) {
+        if (optionalUserProfile.isPresent()) {
             UserProfile profile = optionalUserProfile.get();
 
-            if(userProfileDTO.getUserName() != null){
+            if (userProfileDTO.getUserName() != null) {
                 profile.setUserName(userProfileDTO.getUserName());
             }
-            if(userProfileDTO.getDescription() != null){
+
+            if (userProfileDTO.getDescription() != null) {
                 profile.setDescription(userProfileDTO.getDescription());
             }
+
+            if (userProfileDTO.getRango() != null) {
+                profile.setRango(userProfileDTO.getRango());
+            }
+
             if (userProfileDTO.getFavoritosIds() != null) {
-                List<DatosPersonajes> nuevosFavoritos = datosPersonajesRepository.findAllById(userProfileDTO.getFavoritosIds());
+                List<DatosPersonajes> nuevosFavoritos =
+                        datosPersonajesRepository.findAllById(userProfileDTO.getFavoritosIds());
                 profile.setFavoritos(nuevosFavoritos);
             }
 
             return userProfileRepository.save(profile);
-
-        }
-        else{
+        } else {
             throw new RuntimeException("Perfil de usuario no encontrado");
         }
     }
@@ -68,10 +74,22 @@ public class UserProfileService {
 
         UserProfileDTO dto = new UserProfileDTO();
         dto.setUserName(profile.getUserName());
+        dto.setId(profile.getId());
+        dto.setRango(profile.getRango());
         dto.setDescription(profile.getDescription());
         dto.setFavoritosIds(profile.getFavoritos().stream()
                 .map(DatosPersonajes::getId)
                 .toList());
+        dto.setPfp(profile.getPfp());
+        dto.setClips(
+                profile.getClips().stream().map(clip -> {
+                    ClipDTO c = new ClipDTO();
+                    c.setId(clip.getId());
+                    c.setNombre(clip.getNombre());
+                    c.setUrl(clip.getUrl());
+                    return c;
+                }).collect(Collectors.toList())
+        );
 
         return dto;
     }
@@ -197,5 +215,67 @@ public class UserProfileService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    public List<UserProfileDTO> getAllUserProfiles() {
+        return userProfileRepository.findAll().stream().map(profile -> {
+            UserProfileDTO dto = new UserProfileDTO();
+            dto.setUserName(profile.getUserName());
+            dto.setRango(profile.getRango());
+            dto.setId(profile.getId());
+            dto.setDescription(profile.getDescription());
+            dto.setPfp(profile.getPfp());
+            dto.setFavoritosIds(profile.getFavoritos().stream()
+                    .map(DatosPersonajes::getId)
+                    .toList());
+            dto.setClips(profile.getClips().stream().map(clip -> {
+                ClipDTO c = new ClipDTO();
+                c.setId(clip.getId());
+                c.setNombre(clip.getNombre());
+                c.setUrl(clip.getUrl());
+                return c;
+            }).collect(Collectors.toList()));
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    public UserProfileDTO getUserProfileByProfileId(Long profileId) {
+        UserProfile profile = userProfileRepository.findById(profileId)
+                .orElseThrow(() -> new RuntimeException("Perfil no encontrado"));
+
+        UserProfileDTO dto = new UserProfileDTO();
+        dto.setId(profile.getId());
+        dto.setUserName(profile.getUserName());
+        dto.setDescription(profile.getDescription());
+        dto.setPfp(profile.getPfp());
+        dto.setRango(profile.getRango());
+        dto.setFavoritosIds(profile.getFavoritos().stream()
+                .map(p -> p.getId())
+                .toList());
+        dto.setClips(profile.getClips().stream().map(clip -> {
+            ClipDTO c = new ClipDTO();
+            c.setId(clip.getId());
+            c.setNombre(clip.getNombre());
+            c.setUrl(clip.getUrl());
+            return c;
+        }).toList());
+        return dto;
+    }
+
+    public List<PlatinoDTO> getTrofeosByProfileId(Long profileId) {
+        UserProfile profile = userProfileRepository.findById(profileId)
+                .orElseThrow(() -> new RuntimeException("Perfil no encontrado"));
+
+        return profile.getTrofeosConseguidos().stream()
+                .map(t -> new PlatinoDTO(
+                        t.getId(),
+                        t.getNombre(),
+                        t.getImagen(),
+                        t.getTipo(),
+                        t.getDescripcion()
+                ))
+                .collect(Collectors.toList());
+    }
+
+
 
 }
